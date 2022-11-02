@@ -17,12 +17,32 @@ resource "aws_instance" "app_server" {
   vpc_security_group_ids = [aws_security_group.aws-vm-sg.id]
   source_dest_check      = false
 
+  user_data = "./config/frontend.sh"
+
   associate_public_ip_address = true
 
   root_block_device {
     volume_size           = local.frontend_volume_size
     delete_on_termination = true
   }
+
+    connection {
+    type = "ssh"
+    host = aws_instance.app_server.public_ip
+    user = "ubuntu"
+    private_key = file("${var.private_key}")
+    }
+
+    provisioner "remote-exec" {
+    inline = [
+      "hostname 'frontend'",
+      "echo 'frontend' > /etc/hostname",
+      "AWSAccessKeyId=${var.access_key}",
+      "AWSSecretKey=${var.secret_key}",
+      "export AWSAcessKeyId",
+      "export AWSSecretKey"
+    ]    
+    } 
 
 
   tags = {
@@ -40,18 +60,35 @@ resource "null_resource" "provis_frontend" {
     type = "ssh"
     host = aws_instance.app_server.public_ip
     user = "ubuntu"
-    host_key = file("${var.public_key}")
+    private_key = file("${var.private_key}")
   }
 
   provisioner "remote-exec" {
-    scriscript = "./config/frontend.sh"    
+    script = "./config/frontend.sh"    
+  }  
+}
+
+resource "null_resource" "start_node" {
+  depends_on = [
+    null_resource.provis_frontend
+  ]
+
+  connection {
+    type = "ssh"
+    host = aws_instance.app_server.public_ip
+    user = "ubuntu"
+    private_key = file("${var.private_key}")
   }
 
-  provisioner "name" {
+  provisioner "remote-exec" {
   
-  }
-  
+    inline = [
+      "npm install",
+      "AWSAccessKeyId=${var.access_key} AWSSecretKey=${var.public_key} node ."
+    ]       
+  }  
 }
+
 
 # --- Network ---
 

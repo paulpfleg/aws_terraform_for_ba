@@ -16,6 +16,12 @@ variable "public_key" {
   default     = ""
 }
 
+variable "private_key" {
+  description = "the ssh public key"
+  type        = string
+  default     = ""
+}
+
 locals {
 
   # --- Instances ---
