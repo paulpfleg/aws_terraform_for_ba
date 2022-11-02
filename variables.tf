@@ -1,24 +1,31 @@
 variable "access_key" {
-  type = string
+  description = "the acess key"
+  type        = string
+  default     = ""
 }
 
 variable "secret_key" {
-  type = string
+  description = "the aws secret key"
+  type        = string
+  default     = ""
 }
 
 variable "public_key" {
-  type = string
+  description = "the ssh public key"
+  type        = string
+  default     = ""
 }
 
 locals {
 
-# --- Instances ---
-  frontend_size = "t2.micro"
-  ami           = "ami-0caef02b518350c8b"
+  # --- Instances ---
+  frontend_size        = "t2.micro"
+  ami                  = "ami-0caef02b518350c8b"
+  frontend_volume_size = 8
 
-# --- Netzwork ---
-  default_vpc_cidr  = "192.168.0.0/16"
+  # --- Netzwork ---
+  default_vpc_cidr     = "192.168.0.0/16"
   frontend_subnet_cidr = "192.168.1.0/24"
-  frontend_subnet_az = "eu-central-1a"
+  frontend_subnet_az   = "eu-central-1a"
 }
 

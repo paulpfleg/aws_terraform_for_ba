@@ -2,22 +2,55 @@ resource "aws_key_pair" "frontend" {
   key_name   = "local key"
   public_key = file("${var.public_key}")
 
-    tags = {
+  tags = {
     Name = "frontend"
-    }
+  }
 }
 
 # --- Instances ---
 
 resource "aws_instance" "app_server" {
-  ami           = local.ami
-  instance_type = local.frontend_size
-  key_name      = aws_key_pair.frontend
+  ami                    = local.ami
+  instance_type          = local.frontend_size
+  key_name               = aws_key_pair.frontend.key_name
+  subnet_id              = aws_subnet.public-subnet.id
+  vpc_security_group_ids = [aws_security_group.aws-vm-sg.id]
+  source_dest_check      = false
+
+  associate_public_ip_address = true
+
+  root_block_device {
+    volume_size           = local.frontend_volume_size
+    delete_on_termination = true
+  }
+
 
   tags = {
     Name = "frontend"
   }
 
+}
+
+resource "null_resource" "provis_frontend" {
+  depends_on = [
+    aws_instance.app_server
+  ]
+
+  connection {
+    type = "ssh"
+    host = aws_instance.app_server.public_ip
+    user = "ubuntu"
+    host_key = file("${var.public_key}")
+  }
+
+  provisioner "remote-exec" {
+    scriscript = "./config/frontend.sh"    
+  }
+
+  provisioner "name" {
+  
+  }
+  
 }
 
 # --- Network ---
@@ -55,11 +88,19 @@ resource "aws_route_table_association" "public-rt-association" {
 resource "aws_security_group" "aws-vm-sg" {
   name        = "vm-sg"
   description = "Allow incoming connections"
-  vpc_id      = aws_vpc.vpc.id  
+  vpc_id      = aws_vpc.vpc.id
 
   ingress {
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow incoming HTTP connections"
+  }
+
+    ingress {
+    from_port   = 8080
+    to_port     = 8081
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow incoming HTTP connections"
@@ -77,7 +118,7 @@ resource "aws_security_group" "aws-vm-sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-  }  
+  }
   tags = {
     Name = "frontend"
   }
@@ -88,7 +129,4 @@ resource "aws_security_group" "aws-vm-sg" {
 output "ec2_global_ips" {
   value = aws_instance.app_server.public_ip
 
-    tags = {
-    Name = "frontend"
-  }
 }
