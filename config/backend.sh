@@ -15,7 +15,7 @@ nvm install --lts;
 
 git clone https://github.com/paulpfleg/deploy.git;
 
-cd ./deploy/aws_node;
+cd ./deploy/express_api;
 npm install;
 
 

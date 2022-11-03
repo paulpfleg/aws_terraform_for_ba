@@ -17,7 +17,7 @@ resource "aws_instance" "app_server" {
   vpc_security_group_ids = [aws_security_group.aws-vm-sg.id]
   source_dest_check      = false
 
-  user_data = "./config/frontend.sh"
+  //user_data = "./config/frontend.sh"
 
   associate_public_ip_address = true
 
@@ -75,12 +75,19 @@ resource "null_resource" "start_node" {
     private_key = file("${var.private_key}")
   }
 
+  provisioner "file" {
+      source      = "./config/node.service"
+      destination = "/home/ubuntu/node.service"
+  }
+
   provisioner "remote-exec" {
-  
+
     inline = [
-      "cd ./deploy/aws_node",
-      "npm install",
-      "AWSAccessKeyId=${var.access_key} AWSSecretKey=${var.public_key} node ."
+      "sed -i 's/REPLACE1/${var.access_key}/g' node.service",
+      "sed -i 's/REPLACE2/${var.secret_key}/g' node.service",   
+      "sudo mv /home/ubuntu/node.service /lib/systemd/system",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl start node.service"      
     ]       
   }  
 }

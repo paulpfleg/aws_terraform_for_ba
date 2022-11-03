@@ -24,10 +24,14 @@ variable "private_key" {
 
 locals {
 
-  # --- Instances ---
+  # --- Instances FE ---
   frontend_size        = "t2.micro"
   ami                  = "ami-0caef02b518350c8b"
   frontend_volume_size = 8
+
+  # --- Instances BE ---
+  backend_size        = "t2.micro"
+  backend_volume_size = 50
 
   # --- Netzwork ---
   default_vpc_cidr     = "192.168.0.0/16"
