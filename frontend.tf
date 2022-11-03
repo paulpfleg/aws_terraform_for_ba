@@ -35,12 +35,7 @@ resource "aws_instance" "app_server" {
 
     provisioner "remote-exec" {
     inline = [
-      "hostname 'frontend'",
-      "echo 'frontend' > /etc/hostname",
-      "AWSAccessKeyId=${var.access_key}",
-      "AWSSecretKey=${var.secret_key}",
-      "export AWSAcessKeyId",
-      "export AWSSecretKey"
+      "sudo hostnamectl set-hostname frontend"
     ]    
     } 
 
@@ -83,6 +78,7 @@ resource "null_resource" "start_node" {
   provisioner "remote-exec" {
   
     inline = [
+      "cd ./deploy/aws_node",
       "npm install",
       "AWSAccessKeyId=${var.access_key} AWSSecretKey=${var.public_key} node ."
     ]       

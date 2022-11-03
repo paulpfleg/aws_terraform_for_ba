@@ -7,9 +7,11 @@ sudo apt-get install git -y;
 
 git clone https://github.com/paulpfleg/deploy.git;
 
-nvm install node;
+. ~/.nvm/nvm.sh
+nvm install node
+echo "----installed node!-----";
 
-cd ./deploy/aws_node;
+
 
 # sudo . ~/.nvm/nvm.sh;
 
