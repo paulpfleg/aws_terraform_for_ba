@@ -1,7 +1,6 @@
 #! /bin/bash
 
 sudo apt-get update;
-# curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash;
 
 
 echo "instaling git now";
