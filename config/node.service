@@ -8,7 +8,7 @@ Environment=AWSAccessKeyId=REPLACE1
 Environment=AWSSecretKey=REPLACE2
 Type=simple
 User=ubuntu
-ExecStart=/home/ubuntu/.nvm/versions/node/v18.12.0/bin/node /home/ubuntu/deploy/aws_node
+ExecStart=node /home/ubuntu/deploy/aws_node
 Restart=on-failure
 
 [Install]
