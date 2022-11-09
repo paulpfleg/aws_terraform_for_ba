@@ -33,11 +33,15 @@ resource "aws_instance" "frontend" {
     private_key = file("${var.private_key}")
     }
 
+    provisioner "file" {
+    source      = "./config/node.service"
+    destination = "/home/ubuntu/node.service"
+    }
+
     provisioner "remote-exec" {
-    inline = [
-      "sudo hostnamectl set-hostname frontend"
-    ]    
-    } 
+    script = "./config/frontend.sh"    
+    }
+
 
 
   tags = {
@@ -59,36 +63,16 @@ resource "null_resource" "provis_frontend" {
   }
 
   provisioner "remote-exec" {
-    script = "./config/frontend.sh"    
-  }  
-}
-
-resource "null_resource" "start_node" {
-  depends_on = [
-    null_resource.provis_frontend
-  ]
-
-  connection {
-    type = "ssh"
-    host = aws_instance.frontend.public_ip
-    user = "ubuntu"
-    private_key = file("${var.private_key}")
-  }
-
-  provisioner "file" {
-      source      = "./config/node.service"
-      destination = "/home/ubuntu/node.service"
-  }
-
-  provisioner "remote-exec" {
-
     inline = [
       "sed -i 's/REPLACE1/${var.access_key}/g' node.service",
       "sed -i 's/REPLACE2/${var.secret_key}/g' node.service",   
       "sudo mv /home/ubuntu/node.service /lib/systemd/system",
       "sudo systemctl daemon-reload",
       "sudo systemctl start node.service"      
-    ]       
+    ]   
   }  
 }
+
+
+
 

@@ -1,7 +1,7 @@
 #! /bin/bash
+sudo hostnamectl set-hostname frontend
 
 sudo apt-get update;
-
 
 echo "instaling git now";
 sudo apt-get install git -y;
