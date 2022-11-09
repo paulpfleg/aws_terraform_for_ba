@@ -1,11 +1,6 @@
 # --- Output ---
 
 output "frontend_global_ip" {
-  value = aws_instance.app_server.public_ip
- 
-}
-
-output "backend_global_ip" {
-  value = aws_instance.backend
-
+  value = aws_instance.frontend.public_ip
+  description = "the IP-Adress of the front door"
 }

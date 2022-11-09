@@ -4,23 +4,23 @@
 resource "aws_instance" "backend" {
   ami                    = local.ami
   instance_type          = local.backend_size
-  key_name               = aws_key_pair.frontend.key_name
-  subnet_id              = aws_subnet.public-subnet.id
-  vpc_security_group_ids = [aws_security_group.aws-vm-sg.id]
-  source_dest_check      = false
+  key_name               = aws_key_pair.local_acess.key_name
+  
+  
 
-  //user_data = "./config/frontend.sh"
-
-  associate_public_ip_address = true
+  network_interface {
+    network_interface_id = aws_network_interface.backend.id
+    device_index         = 0
+    }
 
   root_block_device {
     volume_size           = local.backend_volume_size
     delete_on_termination = true
   }
 
-    connection {
+  connection {
     type = "ssh"
-    host = aws_instance.backend.public_ip
+    host = "192.168.1.8"
     user = "ubuntu"
     private_key = file("${var.private_key}")
     }
@@ -35,7 +35,12 @@ resource "aws_instance" "backend" {
   tags = {
     Name = "backend"
   }
+}
 
+resource "aws_network_interface" "backend" {
+  subnet_id       = aws_subnet.public-subnet.id
+  private_ips     = ["192.168.1.8"]
+  security_groups = [aws_security_group.aws-vm-sg.id]
 }
 
 resource "null_resource" "provis_backend" {
