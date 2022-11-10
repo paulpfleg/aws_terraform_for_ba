@@ -22,6 +22,27 @@ variable "private_key" {
   default     = ""
 }
 
+variable "num_frontend" {
+  description = "number of frontend nodes"
+  type        = number
+  default     = 1
+}
+
+variable "provis_frontend" {
+  description = "should the frontend be provisioned?"
+  type        = bool
+  default     = true
+}
+
+variable "num_backend" {
+  description = "number of backend nodes"
+  type        = number
+  default     = 1
+}
+
+
+
+
 locals {
 
   # --- Instances FE ---
@@ -40,16 +61,19 @@ locals {
   cloud_config_config = <<-END
     #cloud-config
     ${jsonencode({
-      write_files = [
-        {
-          path        = "/etc/example.txt"
-          permissions = "0644"
-          owner       = "root:root"
-          encoding    = "b64"
-          content     = filebase64("${path.module}/config/node.service")
-        },
-      ]
-    })}
+  write_files = [
+    {
+      path        = "/etc/example.txt"
+      permissions = "0644"
+      owner       = "root:root"
+      encoding    = "b64"
+      content     = filebase64("${path.module}/config/node.service")
+    },
+  ]
+})}
   END
+
+frontend_first_ip = "192.168.1.8"
+backend_first_ip  = "192.168.1.9"
 }
 

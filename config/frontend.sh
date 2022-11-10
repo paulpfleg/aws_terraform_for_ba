@@ -10,7 +10,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash;
 
 . ~/.nvm/nvm.sh;
 
-nvm install --lts;
+nvm install 18.12.1;
 
 git clone https://github.com/paulpfleg/deploy.git;
 

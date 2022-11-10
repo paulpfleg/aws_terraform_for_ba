@@ -43,7 +43,7 @@ resource "aws_security_group" "aws-vm-sg" {
     description = "Allow incoming HTTP connections"
   }
 
-    ingress {
+  ingress {
     from_port   = 8080
     to_port     = 8081
     protocol    = "tcp"

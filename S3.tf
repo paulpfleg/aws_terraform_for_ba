@@ -1,7 +1,7 @@
 
-resource "aws_s3_bucket" "video_storage" {
+/* resource "aws_s3_bucket" "video_storage" {
   bucket = "video_storage"
- 
+
   # Prevent accidental deletion of this S3 bucket
   lifecycle {
     prevent_destroy = true
@@ -24,5 +24,5 @@ resource "aws_s3_bucket_public_access_block" "public_access" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
-}
+} */
 
