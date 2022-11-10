@@ -2,6 +2,7 @@
 
 sudo apt-get update;
 export DEBIAN_FRONTEND=noninteractive;
+sudo hostnamectl set-hostname backend;
 
 echo "instaling git now";
 sudo apt-get install git -y;
@@ -15,7 +16,10 @@ nvm install 18.12.1;
 git clone https://github.com/paulpfleg/deploy.git;
 
 cd ./deploy/express_api;
+mkdir input output;
+
 npm install;
 
-apt-get update;
-sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install ffmpeg;
+#sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade;
+#sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install ffmpeg;
+sudo snap install ffmpeg;

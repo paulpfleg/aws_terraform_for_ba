@@ -6,7 +6,7 @@ After=network.target
 [Service]
 Environment=AWSAccessKeyId=REPLACE1 
 Environment=AWSSecretKey=REPLACE2
-Environment=IP=192.168.1.8
+Environment=IP=REPLACE3
 Type=simple
 User=ubuntu
 ExecStart=/home/ubuntu/.nvm/versions/node/v18.12.1/bin/node /home/ubuntu/deploy/aws_node

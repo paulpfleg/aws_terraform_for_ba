@@ -29,12 +29,10 @@ resource "aws_instance" "backend" {
     private_key  = file("${var.private_key}")
   }
 
-  provisioner "remote-exec" {
-    inline = [
-      "sudo hostnamectl set-hostname backend"
-    ]
+  provisioner "file" {
+    source      = "./config/node_backend.service"
+    destination = "/home/ubuntu/node_backend.service"
   }
-
 
   tags = {
     Name = "backend"
@@ -48,7 +46,7 @@ resource "aws_instance" "backend" {
   security_groups = [aws_security_group.aws-vm-sg.id]
 }
  */
-resource "null_resource" "provis_backend" {
+resource "null_resource" "provis_1_backend" {
   count = var.num_backend > 0 ? 1 : 0
   depends_on = [
     aws_instance.backend
@@ -63,14 +61,17 @@ resource "null_resource" "provis_backend" {
   }
 
   provisioner "remote-exec" {
-    script = "./config/backend.sh"
+    script     = "./config/backend.sh"
+    on_failure = continue
   }
+
 }
 
-resource "null_resource" "start_node_backend" {
+
+resource "null_resource" "provis_2_backend" {
   count = var.num_backend > 0 ? 1 : 0
   depends_on = [
-    null_resource.provis_backend
+    null_resource.provis_1_backend
   ]
 
   connection {
@@ -81,21 +82,13 @@ resource "null_resource" "start_node_backend" {
     private_key  = file("${var.private_key}")
   }
 
-  provisioner "file" {
-    source      = "./config/node_backend.service"
-    destination = "/home/ubuntu/node.service"
-  }
-
   provisioner "remote-exec" {
-
-    inline = [
-      "sed -i 's/REPLACE1/${var.access_key}/g' node.service",
-      "sed -i 's/REPLACE2/${var.secret_key}/g' node.service",
-      "sudo mv /home/ubuntu/node.service /lib/systemd/system",
-      "sudo systemctl daemon-reload",
-      "sudo systemctl start node.service"
-    ]
+  inline = [
+    "sed -i 's/REPLACE1/${var.access_key}/g' node_backend.service",
+    "sed -i 's/REPLACE2/${var.secret_key}/g' node_backend.service",
+    "sudo mv /home/ubuntu/node_backend.service /lib/systemd/system",
+    "sudo systemctl daemon-reload",
+    "sudo systemctl start node_backend.service"
+  ]
   }
 }
-
-
