@@ -57,7 +57,12 @@ locals {
   # --- Netzwork ---
   default_vpc_cidr     = "192.168.0.0/16"
   frontend_subnet_cidr = "192.168.1.0/24"
+  backend_subnet_cidr_a  = "192.168.2.0/24"
+  backend_subnet_cidr_b  = "192.168.2.0/24"
   frontend_subnet_az   = "eu-central-1a"
+  backend_subnet_az_a    = "eu-central-1b"
+  backend_subnet_az_b    = "eu-central-1b"
+
   cloud_config_config = <<-END
     #cloud-config
     ${jsonencode({
@@ -73,7 +78,10 @@ locals {
 })}
   END
 
-frontend_first_ip = "192.168.1.8"
-backend_first_ip  = "192.168.1.9"
+frontend_first_ip        = "192.168.1.8"
+loadbalancer_frontend_ip = "192.168.1.9"
+loadbalancer_backend_ip  = "192.168.2.8"
+backend_first_ip_a         = "192.168.2.9"
+backend_first_ip_b         = "192.168.3.9"
 }
 

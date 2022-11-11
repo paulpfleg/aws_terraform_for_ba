@@ -8,7 +8,7 @@ Environment=AWSAccessKeyId=REPLACE1
 Environment=AWSSecretKey=REPLACE2
 Type=simple
 User=ubuntu
-ExecStart=node /home/ubuntu/deploy/express_api
+ExecStart=/home/ubuntu/.nvm/versions/node/v18.12.1/bin/node /home/ubuntu/deploy/express_api
 Restart=on-failure
 
 [Install]

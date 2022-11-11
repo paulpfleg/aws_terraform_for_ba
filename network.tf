@@ -11,6 +11,20 @@ resource "aws_subnet" "public-subnet" {
   cidr_block        = local.frontend_subnet_cidr
   availability_zone = local.frontend_subnet_az
 }
+
+
+# Define the public subnet
+resource "aws_subnet" "backend-subnet-a" {
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = local.backend_subnet_cidr_a
+  availability_zone = local.backend_subnet_az_a
+}
+resource "aws_subnet" "backend-subnet-b" {
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = local.backend_subnet_cidr_b
+  availability_zone = local.backend_subnet_az_b
+}
+
 # Define the internet gateway
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.vpc.id
