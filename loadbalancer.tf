@@ -2,6 +2,7 @@ resource "aws_alb" "backend-loadbalancer" {
   name               = "backend-loadbalancer"
   load_balancer_type = "application"
   security_groups    = [aws_security_group.aws-vm-sg.id]
+  subnets = [ aws_subnet.backend-subnet-a.id , aws_subnet.backend-subnet-b.id , aws_subnet.public-subnet.id]
 
 /*   subnet_mapping {
     subnet_id            = aws_subnet.public-subnet.id
@@ -49,13 +50,13 @@ resource "aws_alb_listener" "listener_http" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "to_backend_1_instance" {
+resource "aws_lb_target_group_attachment" "to_backend_a_instance" {
   target_group_arn = aws_alb_target_group.backend.arn
   target_id        = aws_instance.backend_a[0].id
   port             = 8081
 }
 
-resource "aws_lb_target_group_attachment" "to_backend_2_instance" {
+resource "aws_lb_target_group_attachment" "to_backend_b_instance" {
   target_group_arn = aws_alb_target_group.backend.arn
   target_id        = aws_instance.backend_b[0].id
   port             = 8081

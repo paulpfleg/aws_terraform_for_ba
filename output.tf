@@ -11,6 +11,6 @@ output "frontend_global_ip" {
 }
 
 output "backend_public_ip" {
-  value       = aws_instance.backend[0].public_ip
+  value       = aws_instance.backend_a[0].public_ip
   description = "the IP-Adress of the backend instance"
 }

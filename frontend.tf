@@ -85,7 +85,7 @@ resource "null_resource" "provis_2_frontend" {
     inline = [
       "sed -i 's/REPLACE1/${var.access_key}/g' node.service",
       "sed -i 's/REPLACE2/${var.secret_key}/g' node.service",
-      "sed -i 's/REPLACE3/${local.backend_first_ip}/g' nodei.service",
+      "sed -i 's/REPLACE3/${local.backend_first_ip_a}/g' nodei.service",
       "sudo mv /home/ubuntu/node.service /lib/systemd/system",
       "sudo systemctl daemon-reload",
       "sudo systemctl start node.service",

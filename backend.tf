@@ -1,7 +1,7 @@
 
 # --- Instances ---
 
-resource "aws_instance" "backend" {
+resource "aws_instance" "backend_a" {
 
   depends_on = [
     aws_instance.proxy
@@ -24,7 +24,7 @@ resource "aws_instance" "backend" {
   connection {
     type         = "ssh"
     bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend[count.index].private_ip
+    host         = aws_instance.backend_a[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
   }
@@ -59,19 +59,6 @@ resource "aws_instance" "backend_b" {
     delete_on_termination = true
   }
 
-  connection {
-    type         = "ssh"
-    bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend[count.index].private_ip
-    user         = "ubuntu"
-    private_key  = file("${var.private_key}")
-  }
-
-  provisioner "file" {
-    source      = "./config/node_backend.service"
-    destination = "/home/ubuntu/node_backend.service"
-  }
-
   tags = {
     Name = "backend"
   }
@@ -84,16 +71,16 @@ resource "aws_instance" "backend_b" {
   security_groups = [aws_security_group.aws-vm-sg.id]
 }
  */
-resource "null_resource" "provis_1_backend" {
+resource "null_resource" "provis_1_backend_a" {
   count = var.num_backend > 0 ? 1 : 0
   depends_on = [
-    aws_instance.backend
+    aws_instance.backend_a
   ]
 
   connection {
     type         = "ssh"
     bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend[count.index].private_ip
+    host         = aws_instance.backend_a[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
   }
@@ -109,13 +96,13 @@ resource "null_resource" "provis_1_backend" {
 resource "null_resource" "provis_2_backend" {
   count = var.num_backend > 0 ? 1 : 0
   depends_on = [
-    null_resource.provis_1_backend
+    null_resource.provis_1_backend_a
   ]
 
   connection {
     type         = "ssh"
     bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend[count.index].private_ip
+    host         = aws_instance.backend_a[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
   }

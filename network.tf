@@ -43,6 +43,16 @@ resource "aws_route_table_association" "public-rt-association" {
   route_table_id = aws_route_table.public-rt.id
 }
 
+resource "aws_route_table_association" "backend-a-rt-association" {
+  subnet_id      = aws_subnet.backend-subnet-a.id
+  route_table_id = aws_route_table.public-rt.id
+}
+
+resource "aws_route_table_association" "backend-b-rt-association" {
+  subnet_id      = aws_subnet.backend-subnet-b.id
+  route_table_id = aws_route_table.public-rt.id
+}
+
 # Define the security group for the EC2 Instance
 resource "aws_security_group" "aws-vm-sg" {
   name        = "vm-sg"

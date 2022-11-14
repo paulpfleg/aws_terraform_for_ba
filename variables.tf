@@ -58,10 +58,10 @@ locals {
   default_vpc_cidr     = "192.168.0.0/16"
   frontend_subnet_cidr = "192.168.1.0/24"
   backend_subnet_cidr_a  = "192.168.2.0/24"
-  backend_subnet_cidr_b  = "192.168.2.0/24"
+  backend_subnet_cidr_b  = "192.168.3.0/24"
   frontend_subnet_az   = "eu-central-1a"
   backend_subnet_az_a    = "eu-central-1b"
-  backend_subnet_az_b    = "eu-central-1b"
+  backend_subnet_az_b    = "eu-central-1c"
 
   cloud_config_config = <<-END
     #cloud-config
