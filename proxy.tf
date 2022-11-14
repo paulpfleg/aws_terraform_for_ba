@@ -7,6 +7,8 @@ resource "aws_instance" "proxy" {
   vpc_security_group_ids = [aws_security_group.aws-vm-sg.id]
   source_dest_check      = false
 
+  private_ip = local.proxy_private_ip
+
   //user_data = "./config/frontend.sh"
 
   associate_public_ip_address = true

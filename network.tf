@@ -8,17 +8,23 @@ resource "aws_vpc" "vpc" {
 # Define the public subnet
 resource "aws_subnet" "public-subnet" {
   vpc_id            = aws_vpc.vpc.id
-  cidr_block        = local.frontend_subnet_cidr
+  cidr_block        = local.public_subnet_cidr
   availability_zone = local.frontend_subnet_az
 }
 
 
 # Define the public subnet
+resource "aws_subnet" "frontend_subnet" {
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = local.frontend_subnet_cidr
+  availability_zone = local.frontend_subnet_az
+}
 resource "aws_subnet" "backend-subnet-a" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = local.backend_subnet_cidr_a
   availability_zone = local.backend_subnet_az_a
 }
+
 resource "aws_subnet" "backend-subnet-b" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = local.backend_subnet_cidr_b
@@ -29,7 +35,7 @@ resource "aws_subnet" "backend-subnet-b" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.vpc.id
 }
-# Define the public route table
+# forwards all traffic to the pub. internet
 resource "aws_route_table" "public-rt" {
   vpc_id = aws_vpc.vpc.id
   route {
@@ -40,6 +46,11 @@ resource "aws_route_table" "public-rt" {
 # Assign the public route table to the public subnet
 resource "aws_route_table_association" "public-rt-association" {
   subnet_id      = aws_subnet.public-subnet.id
+  route_table_id = aws_route_table.public-rt.id
+}
+
+resource "aws_route_table_association" "frontend-rt-association" {
+  subnet_id      = aws_subnet.frontend_subnet.id
   route_table_id = aws_route_table.public-rt.id
 }
 

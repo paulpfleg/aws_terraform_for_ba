@@ -12,4 +12,4 @@ sudo unlink /etc/nginx/sites-enabled/default;
 sudo mv /home/ubuntu/nginx.conf /etc/nginx;
 
 sudo nginx -s reload;
-sudo systemctl restart nginx.service
+sudo systemctl restart nginx.service;

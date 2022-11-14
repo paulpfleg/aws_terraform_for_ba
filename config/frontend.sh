@@ -1,5 +1,5 @@
 #! /bin/bash
-sudo hostnamectl set-hostname frontend
+sudo hostnamectl set-hostname frontend;
 
 sudo apt-get update;
 
@@ -14,7 +14,7 @@ nvm install 18.12.1;
 
 git clone https://github.com/paulpfleg/deploy.git;
 
-cd ./deploy/aws_node;
+cd ./deploy/aws_node || exit;
 npm install;
 
 

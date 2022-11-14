@@ -11,21 +11,13 @@ resource "aws_instance" "frontend" {
   ami             = local.ami
   instance_type   = local.frontend_size
   key_name        = aws_key_pair.local_acess.key_name
-  subnet_id       = aws_subnet.public-subnet.id
+  subnet_id       = aws_subnet.frontend_subnet.id
   security_groups = [aws_security_group.aws-vm-sg.id]
 
   private_ip                  = local.frontend_first_ip
   associate_public_ip_address = true
 
   #source_dest_check      = false
-
-
-  //user_data = "./config/frontend.sh"
-
-  /*   network_interface {
-  network_interface_id = aws_network_interface.frontend[count.index].id
-  device_index         = 0
-  } */
 
   root_block_device {
     volume_size           = local.frontend_volume_size
@@ -37,13 +29,6 @@ resource "aws_instance" "frontend" {
   }
 
 }
-
-/* resource "aws_network_interface" "frontend" {
-  count = var.num_frontend > 0 ? 1 : 0
-  subnet_id       = aws_subnet.public-subnet.id
-  private_ips     = [local.frontend_first_ip]
-  security_groups = [aws_security_group.aws-vm-sg.id]
-} */
 
 resource "null_resource" "provis_1_frontend" {
   count = var.provis_frontend ? 1 : 0
@@ -85,7 +70,7 @@ resource "null_resource" "provis_2_frontend" {
     inline = [
       "sed -i 's/REPLACE1/${var.access_key}/g' node.service",
       "sed -i 's/REPLACE2/${var.secret_key}/g' node.service",
-      "sed -i 's/REPLACE3/${local.backend_first_ip_a}/g' nodei.service",
+      "sed -i 's/REPLACE3/${aws_instance.proxy.private_ip}/g' node.service",
       "sudo mv /home/ubuntu/node.service /lib/systemd/system",
       "sudo systemctl daemon-reload",
       "sudo systemctl start node.service",
