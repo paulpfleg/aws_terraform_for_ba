@@ -5,5 +5,6 @@ resource "null_resource" "provis_local" {
 
   provisioner "local-exec" {
     command = "touch ~/.ssh/config && sed -i 'ig' 's/IP_PROXY/${aws_instance.proxy.public_ip}/g' ./config/local/conf && mv ./config/local/config ~/.ssh/config"
+    //&& ssh-agent -s && ssh-add ${var.public_key}
   }
 }

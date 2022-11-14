@@ -9,14 +9,14 @@ resource "aws_instance" "backend_a" {
     aws_instance.proxy
   ]
 
-  count                       = var.num_backend_a
+  count                       = local.num_backend_a
   ami                         = local.ami
   instance_type               = local.backend_size
   key_name                    = aws_key_pair.local_acess.key_name
   subnet_id                   = aws_subnet.backend-subnet-a.id
   security_groups             = [aws_security_group.sg_private_subnets.id]
-  private_ip                  = local.backend_first_ip_a
-  associate_public_ip_address = false
+  private_ip                  = "${substr(local.backend_first_ip_a,0,10)}${count.index+tonumber(substr(local.proxy_private_ip,-2,0))}"
+  associate_public_ip_address = true
 
   root_block_device {
     volume_size           = local.backend_volume_size
@@ -26,7 +26,7 @@ resource "aws_instance" "backend_a" {
   connection {
     type         = "ssh"
     bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend_a[count.index].private_ip
+    host         = self.private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
     agent        = true
@@ -38,12 +38,12 @@ resource "aws_instance" "backend_a" {
   }
 
   tags = {
-    Name = "backend"
+    Name = "backend_Az_A_${count.index}"
   }
 }
 
 resource "null_resource" "provis_1_backend_a" {
-  count = var.num_backend_a > 0 ? 1 : 0
+  count = local.num_backend_a > 0 ? 1 : 0
   depends_on = [
     aws_instance.backend_a
   ]
@@ -66,7 +66,7 @@ resource "null_resource" "provis_1_backend_a" {
 
 
 resource "null_resource" "provis_2_backend_a" {
-  count = var.num_backend_a > 0 ? 1 : 0
+  count = local.num_backend_a > 0 ? 1 : 0
   depends_on = [
     null_resource.provis_1_backend_a
   ]
@@ -92,7 +92,7 @@ resource "null_resource" "provis_2_backend_a" {
 }
 
 
-/* 
+
 # Instance B
 
 resource "aws_instance" "backend_b" {
@@ -101,14 +101,14 @@ resource "aws_instance" "backend_b" {
     aws_instance.proxy
   ]
 
-  count                       = var.num_backend_b
+  count                       = local.num_backend_b
   ami                         = local.ami
   instance_type               = local.backend_size
   key_name                    = aws_key_pair.local_acess.key_name
   subnet_id                   = aws_subnet.backend-subnet-b.id
   security_groups             = [aws_security_group.aws-vm-sg.id]
-  private_ip                  = local.backend_first_ip_b
-  associate_public_ip_address = false
+  private_ip                  = "${substr(local.backend_first_ip_b,0,10)}${count.index+tonumber(substr(local.proxy_private_ip,-2,0))}"
+  associate_public_ip_address = true
 
   root_block_device {
     volume_size           = local.backend_volume_size
@@ -118,7 +118,7 @@ resource "aws_instance" "backend_b" {
   connection {
     type         = "ssh"
     bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend_b[count.index].private_ip
+    host         = self.private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
     agent        = true
@@ -130,13 +130,13 @@ resource "aws_instance" "backend_b" {
   }
 
   tags = {
-    Name = "backend"
+    Name = "backend_Az_B_${count.index}"
   }
 }
 
 
 resource "null_resource" "provis_1_backend_b" {
-  count = var.num_backend_b > 0 ? 1 : 0
+  count = local.num_backend_b > 0 ? 1 : 0
   depends_on = [
     aws_instance.backend_b
   ]
@@ -159,7 +159,7 @@ resource "null_resource" "provis_1_backend_b" {
 
 
 resource "null_resource" "provis_2_backend_b" {
-  count = var.num_backend_b > 0 ? 1 : 0
+  count = local.num_backend_b > 0 ? 1 : 0
   depends_on = [
     null_resource.provis_1_backend_b
   ]
@@ -182,4 +182,4 @@ resource "null_resource" "provis_2_backend_b" {
       "sudo systemctl start node_backend.service"
     ]
   }
-} */
+}

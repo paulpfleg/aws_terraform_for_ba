@@ -34,18 +34,17 @@ variable "provis_frontend" {
   default     = true
 }
 
-variable "num_backend_a" {
+variable "num_backend" {
+  description = "number of backend nodes"
+  type        = number
+}
+
+/* variable "num_backend_b" {
   description = "number of backend nodes"
   type        = number
   default     = 1
 }
-
-variable "num_backend_b" {
-  description = "number of backend nodes"
-  type        = number
-  default     = 1
-}
-
+ */
 locals {
 
   # --- Instances FE ---
@@ -56,6 +55,9 @@ locals {
   # --- Instances BE ---
   backend_size        = "t2.micro"
   backend_volume_size = 50
+  num_backend_a= ceil(var.num_backend/2)
+  num_backend_b= floor(var.num_backend/2)
+
 
   # --- Netzwork ---
   default_vpc_cidr = "192.168.0.0/16"
@@ -64,6 +66,11 @@ locals {
   frontend_subnet_cidr  = "192.168.2.0/24"
   backend_subnet_cidr_a = "192.168.3.0/24"
   backend_subnet_cidr_b = "192.168.4.0/24"
+
+
+  
+
+
 
   proxy_private_ip   = "192.168.1.16"
   frontend_first_ip  = "192.168.2.16"
@@ -74,7 +81,12 @@ locals {
   frontend_subnet_az  = "eu-central-1a"
   backend_subnet_az_a = "eu-central-1a"
   backend_subnet_az_b = "eu-central-1b"
-
+/* 
+  ip_list = {
+    for i in range(num_backend_a) :
+      ip_list
+  }
+ */
 }
 
 /* cloud_config_config = <<-END

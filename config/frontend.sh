@@ -12,7 +12,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash;
 
 nvm install 18.12.1;
 
-git clone https://github.com/paulpfleg/deploy.git;
+git clone git@github.com:paulpfleg/deploy.git;
 
 cd ./deploy/aws_node || exit;
 npm install;
