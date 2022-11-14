@@ -104,8 +104,8 @@ resource "aws_security_group" "aws-vm-sg" {
   }
 }
 
-resource "aws_security_group" "aws-vm-sg" {
-  name        = "vm-sg"
+resource "aws_security_group" "sg_private_subnets" {
+  name        = "sg_private_subnets"
   description = "Allow incoming connections"
   vpc_id      = aws_vpc.vpc.id
 
@@ -113,8 +113,8 @@ resource "aws_security_group" "aws-vm-sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow incoming HTTP connections"
+    cidr_blocks = [local.default_vpc_cidr]
+    description = "incomming tcp from VPC"
   }
 
   ingress {
@@ -122,7 +122,7 @@ resource "aws_security_group" "aws-vm-sg" {
     to_port     = 8081
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow incoming HTTP connections"
+    description = "incomming tcp from VPC"
   }
 
   ingress {
@@ -130,13 +130,14 @@ resource "aws_security_group" "aws-vm-sg" {
     to_port     = 22
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow incoming SSH connections"
+    description = "incomming ssh from VPC"
   }
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "egress to all"
   }
   tags = {
     Name = "public"

@@ -12,7 +12,7 @@ resource "aws_instance" "frontend" {
   instance_type   = local.frontend_size
   key_name        = aws_key_pair.local_acess.key_name
   subnet_id       = aws_subnet.frontend_subnet.id
-  security_groups = [aws_security_group.aws-vm-sg.id]
+  security_groups = [aws_security_group.sg_private_subnets.id]
 
   private_ip                  = local.frontend_first_ip
   associate_public_ip_address = true
@@ -39,6 +39,7 @@ resource "null_resource" "provis_1_frontend" {
     host         = aws_instance.frontend[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
+    agent        = true
   }
 
   provisioner "file" {
@@ -64,6 +65,7 @@ resource "null_resource" "provis_2_frontend" {
     host         = aws_instance.frontend[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
+    agent        = true
   }
 
   provisioner "remote-exec" {

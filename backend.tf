@@ -14,7 +14,7 @@ resource "aws_instance" "backend_a" {
   instance_type               = local.backend_size
   key_name                    = aws_key_pair.local_acess.key_name
   subnet_id                   = aws_subnet.backend-subnet-a.id
-  security_groups             = [aws_security_group.aws-vm-sg.id]
+  security_groups             = [aws_security_group.sg_private_subnets.id]
   private_ip                  = local.backend_first_ip_a
   associate_public_ip_address = false
 
@@ -29,6 +29,7 @@ resource "aws_instance" "backend_a" {
     host         = aws_instance.backend_a[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
+    agent        = true
   }
 
   provisioner "file" {
@@ -53,6 +54,7 @@ resource "null_resource" "provis_1_backend_a" {
     host         = aws_instance.backend_a[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
+    agent        = true
   }
 
   provisioner "remote-exec" {
@@ -75,6 +77,7 @@ resource "null_resource" "provis_2_backend_a" {
     host         = aws_instance.backend_a[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
+    agent        = true
   }
 
   provisioner "remote-exec" {
@@ -118,6 +121,7 @@ resource "aws_instance" "backend_b" {
     host         = aws_instance.backend_b[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
+    agent        = true
   }
 
   provisioner "file" {
@@ -143,6 +147,7 @@ resource "null_resource" "provis_1_backend_b" {
     host         = aws_instance.backend_b[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
+    agent        = true
   }
 
   provisioner "remote-exec" {
@@ -165,6 +170,7 @@ resource "null_resource" "provis_2_backend_b" {
     host         = aws_instance.backend_b[count.index].private_ip
     user         = "ubuntu"
     private_key  = file("${var.private_key}")
+    agent        = true
   }
 
   provisioner "remote-exec" {
