@@ -16,7 +16,7 @@ resource "aws_instance" "backend_a" {
   subnet_id                   = aws_subnet.backend-subnet-a.id
   security_groups             = [aws_security_group.aws-vm-sg.id]
   private_ip                  = local.backend_first_ip_a
-  associate_public_ip_address = true
+  associate_public_ip_address = false
 
   root_block_device {
     volume_size           = local.backend_volume_size
@@ -88,6 +88,8 @@ resource "null_resource" "provis_2_backend_a" {
   }
 }
 
+
+/* 
 # Instance B
 
 resource "aws_instance" "backend_b" {
@@ -103,11 +105,24 @@ resource "aws_instance" "backend_b" {
   subnet_id                   = aws_subnet.backend-subnet-b.id
   security_groups             = [aws_security_group.aws-vm-sg.id]
   private_ip                  = local.backend_first_ip_b
-  associate_public_ip_address = true
+  associate_public_ip_address = false
 
   root_block_device {
     volume_size           = local.backend_volume_size
     delete_on_termination = true
+  }
+
+  connection {
+    type         = "ssh"
+    bastion_host = aws_instance.proxy.public_ip
+    host         = aws_instance.backend_b[count.index].private_ip
+    user         = "ubuntu"
+    private_key  = file("${var.private_key}")
+  }
+
+  provisioner "file" {
+    source      = "./config/node_backend.service"
+    destination = "/home/ubuntu/node_backend.service"
   }
 
   tags = {
@@ -161,4 +176,4 @@ resource "null_resource" "provis_2_backend_b" {
       "sudo systemctl start node_backend.service"
     ]
   }
-}
+} */
