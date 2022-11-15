@@ -1,5 +1,9 @@
 
 resource "aws_instance" "proxy" {
+  depends_on = [
+    null_resource.configure_file
+  ]
+
   ami                    = local.ami
   instance_type          = local.frontend_size
   key_name               = aws_key_pair.local_acess.key_name
@@ -20,7 +24,7 @@ resource "aws_instance" "proxy" {
 
   connection {
     type        = "ssh"
-    host        = aws_instance.proxy.public_ip
+    host        = self.public_ip
     user        = "ubuntu"
     private_key = file("${var.private_key}")
   }
@@ -36,13 +40,32 @@ resource "aws_instance" "proxy" {
     on_failure = continue
   }
 
-  provisioner "local-exec" {
-    when    = destroy
-    command = "rsync -a -r ubuntu@${aws_instance.proxy.public_ip}:/home/ubuntu/uptime_kuma/uptime-kuma-data config/proxy/files/"
-  }
-
   tags = {
     Name = "proxy"
   }
-
 }
+
+
+
+/* resource "null_resource" "destroy_proxy" {
+
+  triggers = {
+    key = var.private_key
+    ip = aws_instance.proxy.public_ip 
+  }
+
+  connection {
+    type         = "ssh"
+    host         = self.triggers.key
+    user         = "ubuntu"
+    private_key  = file("${self.triggers.key}")
+    agent        = true
+  }
+
+  provisioner "local-exec" {
+    when    = destroy
+    command = "rsync -a -r ubuntu@${self.triggers.key}:/home/ubuntu/uptime_kuma/uptime-kuma-data config/proxy/files/"
+    on_failure = continue
+  }
+}
+ */

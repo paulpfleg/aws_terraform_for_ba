@@ -79,6 +79,14 @@ resource "aws_security_group" "aws-vm-sg" {
   }
 
   ingress {
+    from_port   = 3001
+    to_port     = 3001
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "traffic to uptime Kuma"
+  }
+
+  ingress {
     from_port   = 8080
     to_port     = 8081
     protocol    = "tcp"
@@ -113,7 +121,7 @@ resource "aws_security_group" "sg_private_subnets" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [local.default_vpc_cidr]
+    cidr_blocks = ["0.0.0.0/0"]
     description = "incomming tcp from VPC"
   }
 
@@ -121,7 +129,7 @@ resource "aws_security_group" "sg_private_subnets" {
     from_port   = 8080
     to_port     = 8081
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [local.default_vpc_cidr]
     description = "incomming tcp from VPC"
   }
 
@@ -129,7 +137,7 @@ resource "aws_security_group" "sg_private_subnets" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [local.default_vpc_cidr]
     description = "incomming ssh from VPC"
   }
   egress {

@@ -81,12 +81,9 @@ locals {
   frontend_subnet_az  = "eu-central-1a"
   backend_subnet_az_a = "eu-central-1a"
   backend_subnet_az_b = "eu-central-1b"
-/* 
-  ip_list = {
-    for i in range(num_backend_a) :
-      ip_list
-  }
- */
+
+  
+
 }
 
 /* cloud_config_config = <<-END

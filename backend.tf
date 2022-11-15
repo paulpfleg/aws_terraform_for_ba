@@ -32,57 +32,25 @@ resource "aws_instance" "backend_a" {
     agent        = true
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "sudo hostnamectl set-hostname backend_A_${count.index}",
+      "touch ./.ssh/know_hosts",
+      "echo'github.com ${var.public_key}' >> ./.ssh/know_hosts",
+    ]
+
+    on_failure = continue
+  }
+
   provisioner "file" {
     source      = "./config/node_backend.service"
     destination = "/home/ubuntu/node_backend.service"
   }
 
-  provisioner "remote-exec" {
-    script     = "./config/backend.sh"
-    on_failure = continue
-  }
-
-  tags = {
-    Name = "backend_Az_A_${count.index}"
-  }
-}
-
-resource "null_resource" "provis_1_backend_a" {
-  count = local.num_backend_a > 0 ? 1 : 0
-  depends_on = [
-    aws_instance.backend_a
-  ]
-
-  connection {
-    type         = "ssh"
-    bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend_a[count.index].private_ip
-    user         = "ubuntu"
-    private_key  = file("${var.private_key}")
-    agent        = true
-  }
 
   provisioner "remote-exec" {
     script     = "./config/backend.sh"
     on_failure = continue
-  }
-
-}
-
-
-resource "null_resource" "provis_2_backend_a" {
-  count = local.num_backend_a > 0 ? 1 : 0
-  depends_on = [
-    null_resource.provis_1_backend_a
-  ]
-
-  connection {
-    type         = "ssh"
-    bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend_a[count.index].private_ip
-    user         = "ubuntu"
-    private_key  = file("${var.private_key}")
-    agent        = true
   }
 
   provisioner "remote-exec" {
@@ -94,8 +62,11 @@ resource "null_resource" "provis_2_backend_a" {
       "sudo systemctl start node_backend.service"
     ]
   }
-}
 
+  tags = {
+    Name = "backend_Az_A_${count.index}"
+  }
+}
 
 
 # Instance B
@@ -111,7 +82,7 @@ resource "aws_instance" "backend_b" {
   instance_type               = local.backend_size
   key_name                    = aws_key_pair.local_acess.key_name
   subnet_id                   = aws_subnet.backend-subnet-b.id
-  security_groups             = [aws_security_group.aws-vm-sg.id]
+  security_groups             = [aws_security_group.sg_private_subnets.id]
   private_ip                  = "${substr(local.backend_first_ip_b,0,10)}${count.index+tonumber(substr(local.proxy_private_ip,-2,0))}"
   associate_public_ip_address = true
 
@@ -129,53 +100,24 @@ resource "aws_instance" "backend_b" {
     agent        = true
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "sudo hostnamectl set-hostname backend_B_${count.index}",
+      "touch ./.ssh/know_hosts",
+      "echo'github.com ${var.public_key}' >> ./.ssh/know_hosts",
+    ]
+
+    on_failure = continue
+  }
+
   provisioner "file" {
     source      = "./config/node_backend.service"
     destination = "/home/ubuntu/node_backend.service"
   }
 
-  tags = {
-    Name = "backend_Az_B_${count.index}"
-  }
-}
-
-
-resource "null_resource" "provis_1_backend_b" {
-  count = local.num_backend_b > 0 ? 1 : 0
-  depends_on = [
-    aws_instance.backend_b
-  ]
-
-  connection {
-    type         = "ssh"
-    bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend_b[count.index].private_ip
-    user         = "ubuntu"
-    private_key  = file("${var.private_key}")
-    agent        = true
-  }
-
   provisioner "remote-exec" {
     script     = "./config/backend.sh"
     on_failure = continue
-  }
-
-}
-
-
-resource "null_resource" "provis_2_backend_b" {
-  count = local.num_backend_b > 0 ? 1 : 0
-  depends_on = [
-    null_resource.provis_1_backend_b
-  ]
-
-  connection {
-    type         = "ssh"
-    bastion_host = aws_instance.proxy.public_ip
-    host         = aws_instance.backend_b[count.index].private_ip
-    user         = "ubuntu"
-    private_key  = file("${var.private_key}")
-    agent        = true
   }
 
   provisioner "remote-exec" {
@@ -186,5 +128,9 @@ resource "null_resource" "provis_2_backend_b" {
       "sudo systemctl daemon-reload",
       "sudo systemctl start node_backend.service"
     ]
+  }
+
+  tags = {
+    Name = "backend_Az_B_${count.index}"
   }
 }

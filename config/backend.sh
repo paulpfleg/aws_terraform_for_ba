@@ -2,7 +2,6 @@
 
 sudo apt-get update;
 export DEBIAN_FRONTEND=noninteractive;
-sudo hostnamectl set-hostname backend;
 
 echo "instaling git now";
 sudo apt-get install git -y;
@@ -16,10 +15,10 @@ nvm install 18.12.1;
 mkdir deploy && cd deploy || return;
 
 git init;
-git remote add -f origin git@github.com:paulpfleg/deploy.git;
+git remote add -f origin https://github.com/paulpfleg/deploy.git;
 git config core.sparseCheckout true;
 echo "express_api" >> .git/info/sparse-checkout;
-git pull origin master;
+git pull origin main;
 
 cd ./express_api || exit;
 mkdir input output;

@@ -15,10 +15,10 @@ nvm install 18.12.1;
 mkdir deploy && cd deploy || return;
 
 git init;
-git remote add -f origin git@github.com:paulpfleg/deploy.git;
+git remote add -f origin https://github.com/paulpfleg/deploy.git;
 git config core.sparseCheckout true;
 echo "aws_node" >> .git/info/sparse-checkout;
-git pull origin master;
+git pull origin main;
 
 
 cd ./aws_node || exit;
