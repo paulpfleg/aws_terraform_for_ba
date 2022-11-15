@@ -26,55 +26,23 @@ resource "aws_instance" "proxy" {
   }
 
   provisioner "file" {
-    source      = "./config/proxy/nginx.conf"
-    destination = "./nginx.conf"
+    source      = "./config/proxy/files"
+    destination = "./files"
   }
 
   provisioner "remote-exec" {
     script = "./config/proxy/proxy.sh"
+
+    on_failure = continue
   }
 
+  provisioner "local-exec" {
+    when    = destroy
+    command = "rsync -a -r ubuntu@${aws_instance.proxy.public_ip}:/home/ubuntu/uptime_kuma/uptime-kuma-data config/proxy/files/"
+  }
 
   tags = {
     Name = "proxy"
   }
 
 }
-/* 
-resource "null_resource" "provis_1_proxy" {
-  depends_on = [
-    aws_instance.proxy
-    ]
-
-    connection {
-    type        = "ssh"
-    host        = aws_instance.proxy.public_ip
-    user        = "ubuntu"
-    private_key = file("${var.private_key}")
-    }
-
-    provisioner "remote-exec" {
-    inline = [
-      "sed -i 's/REPLACE1/${var.access_key}/g' rev_prox.conf",
-      "sudo mv /home/ubuntu/rev_prox.conf /lib/systemd/system",
-      "sudo systemctl daemon-reload",
-      "sudo systemctl start node.service",
-      "sudo systemtl enable node.service"
-    ]
-  }
-}
-
-resource "null_resource" "provis_2_proxy" {
-  depends_on = [
-    aws_instance.proxy
-    ]
-
-    connection {
-    type        = "ssh"
-    host        = aws_instance.proxy.public_ip
-    user        = "ubuntu"
-    private_key = file("${var.private_key}")
-    }
-
-
-} */

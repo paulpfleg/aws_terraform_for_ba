@@ -17,7 +17,7 @@ variable "public_key" {
 }
 
 variable "private_key" {
-  description = "the ssh public key"
+  description = "the ssh private key"
   type        = string
   default     = ""
 }

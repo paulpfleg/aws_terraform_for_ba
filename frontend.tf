@@ -49,6 +49,8 @@ resource "null_resource" "provis_1_frontend" {
 
   provisioner "remote-exec" {
     script = "./config/frontend.sh"
+
+    
   }
 
 }

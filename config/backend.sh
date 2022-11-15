@@ -13,9 +13,15 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash;
 
 nvm install 18.12.1;
 
-git clone git@github.com:paulpfleg/deploy.git;
+mkdir deploy && cd deploy || return;
 
-cd ./deploy/express_api || exit;
+git init;
+git remote add -f origin git@github.com:paulpfleg/deploy.git;
+git config core.sparseCheckout true;
+echo "express_api" >> .git/info/sparse-checkout;
+git pull origin master;
+
+cd ./express_api || exit;
 mkdir input output;
 
 npm install;

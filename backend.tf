@@ -37,6 +37,11 @@ resource "aws_instance" "backend_a" {
     destination = "/home/ubuntu/node_backend.service"
   }
 
+  provisioner "remote-exec" {
+    script     = "./config/backend.sh"
+    on_failure = continue
+  }
+
   tags = {
     Name = "backend_Az_A_${count.index}"
   }
