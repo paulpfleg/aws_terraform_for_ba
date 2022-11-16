@@ -2,8 +2,11 @@
 sudo hostnamectl set-hostname proxy;
 
 sudo apt-get update;
-sudo apt-get install nginx -y;
+sudo apt-get install --no-install-recommends software-properties-common;
+sudo add-apt-repository ppa:vbernat/haproxy-2.5 -y;
 
+sudo apt-get install nginx -y;
+sudo apt-get install haproxy=2.5.\* -y;
 
 # Move data from local to persist configs
 mkdir ./uptime_kuma;
@@ -25,6 +28,7 @@ sudo unlink /etc/nginx/sites-enabled/default;
 
 #move to directory
 sudo mv /home/ubuntu/files/nginx.conf /etc/nginx;
+sudo mv /home/ubuntu/files/haproxy.cfg /etc/haproxy;
 
 rm -R ./files;
 
@@ -32,7 +36,7 @@ sudo nginx -s reload;
 
 sudo systemctl daemon-reload;
 sudo systemctl restart nginx.service;
-
+sudo systemctl restart haproxy.service;
 
 cd ./uptime_kuma || return;
 sudo docker-compose up -d;
