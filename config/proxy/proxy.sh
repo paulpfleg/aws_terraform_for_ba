@@ -30,13 +30,13 @@ sudo unlink /etc/nginx/sites-enabled/default;
 sudo mv /home/ubuntu/files/nginx.conf /etc/nginx;
 sudo mv /home/ubuntu/files/haproxy.cfg /etc/haproxy;
 
-rm -R ./files;
+rm -R /home/ubuntu/files;
+
+cd /home/ubuntu/uptime_kuma || return;
+sudo docker-compose up -d;
 
 sudo nginx -s reload;
 
 sudo systemctl daemon-reload;
 sudo systemctl restart nginx.service;
 sudo systemctl restart haproxy.service;
-
-cd ./uptime_kuma || return;
-sudo docker-compose up -d;

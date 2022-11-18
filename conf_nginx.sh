@@ -29,7 +29,6 @@ for ((i=0;i<numOfIps;i++))
 do
   sed -i '' "/\#DYNAMIC_IPS/a\\
   \\
-  $${arr[i]}" config/proxy/files/haproxy.cfg
+$${arr[i]}" config/proxy/files/haproxy.cfg
 
-  sed $'s/f/#DYNAMIC_IPS\\\n/' config/proxy/files/haproxy.cfg
 done

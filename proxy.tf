@@ -37,7 +37,6 @@ resource "aws_instance" "proxy" {
   provisioner "remote-exec" {
     script = "./config/proxy/proxy.sh"
 
-    on_failure = continue
   }
 
   tags = {

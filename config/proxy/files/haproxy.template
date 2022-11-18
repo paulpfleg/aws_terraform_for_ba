@@ -37,8 +37,9 @@ frontend myfrontend
   bind 127.0.0.1:8181
 
 default_backend myservers
-  #DYNAMIC_IPS
+  
 
 backend myservers
   balance leastconn
   option httpchk
+  #DYNAMIC_IPS
