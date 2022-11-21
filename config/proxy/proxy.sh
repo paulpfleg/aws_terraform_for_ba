@@ -19,9 +19,10 @@ sudo snap install docker;
 
 sudo groupadd docker;
 #sudo usermod -aG docker "$USER";
-sudo systemctl enable docker.service;
-sudo systemctl enable containerd.service;
 
+#sudo systemctl enable docker.service;
+#sudo systemctl enable containerd.service;
+#sudo systemctl start docker;
 
 #unlink the default showcase host
 sudo unlink /etc/nginx/sites-enabled/default;
@@ -40,3 +41,5 @@ sudo nginx -s reload;
 sudo systemctl daemon-reload;
 sudo systemctl restart nginx.service;
 sudo systemctl restart haproxy.service;
+
+

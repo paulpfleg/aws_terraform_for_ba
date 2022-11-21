@@ -10,7 +10,7 @@ resource "aws_instance" "backend_a" {
   ]
 
   count                       = local.num_backend_a
-  ami                         = local.ami
+  ami                         = local.ami_backend
   instance_type               = local.backend_size
   key_name                    = aws_key_pair.local_acess.key_name
   subnet_id                   = aws_subnet.backend-subnet-a.id
@@ -58,6 +58,7 @@ resource "aws_instance" "backend_a" {
       "sed -i 's/REPLACE1/${var.access_key}/g' node_backend.service",
       "sed -i 's/REPLACE2/${var.secret_key}/g' node_backend.service",
       "sudo mv /home/ubuntu/node_backend.service /lib/systemd/system",
+      "sudo systemctl enable node_backend.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl start node_backend.service"
     ]
@@ -78,7 +79,7 @@ resource "aws_instance" "backend_b" {
   ]
 
   count                       = local.num_backend_b
-  ami                         = local.ami
+  ami                         = local.ami_backend
   instance_type               = local.backend_size
   key_name                    = aws_key_pair.local_acess.key_name
   subnet_id                   = aws_subnet.backend-subnet-b.id
@@ -125,6 +126,7 @@ resource "aws_instance" "backend_b" {
       "sed -i 's/REPLACE1/${var.access_key}/g' node_backend.service",
       "sed -i 's/REPLACE2/${var.secret_key}/g' node_backend.service",
       "sudo mv /home/ubuntu/node_backend.service /lib/systemd/system",
+      "sudo systemctl enable node_backend.service",
       "sudo systemctl daemon-reload",
       "sudo systemctl start node_backend.service"
     ]

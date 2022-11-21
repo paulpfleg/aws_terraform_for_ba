@@ -1,6 +1,6 @@
 [Unit]
-Description=starting the node.js server - restarting on reboot
-Documentation=the REPLACE Keywords will be replaced
+Description=starting the node.js server - restarting on reboot the REPLACE Keywords will be replaced
+Documentation=
 After=network.target
 
 [Service]

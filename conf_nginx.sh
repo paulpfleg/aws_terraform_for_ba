@@ -6,7 +6,8 @@ declare numOfIps=${num_backend}
 declare numBackA=${num_backend_a}
 declare numBackB=${num_backend_b}
 
-cp config/proxy/files/haproxy.template config/proxy/files/haproxy.cfg
+#rm config/proxy/files/haproxy.cfg;
+cp config/proxy/files/haproxy.template config/proxy/files/haproxy.cfg;
 
 
 for ((i=0;i<numBackA;i++))
@@ -27,8 +28,10 @@ done
 
 for ((i=0;i<numOfIps;i++))
 do
-  sed -i '' "/\#DYNAMIC_IPS/a\\
-  \\
-$${arr[i]}" config/proxy/files/haproxy.cfg
+#  sed -i '' "/\#DYNAMIC_IPS/a\\
+#  \\
+#$${arr[i]}" config/proxy/files/haproxy.cfg;
+
+printf '%s\n' "$${arr[i]}" >> config/proxy/files/haproxy.cfg
 
 done
