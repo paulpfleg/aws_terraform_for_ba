@@ -56,7 +56,7 @@ locals {
   frontend_volume_size = 8
 
   # --- Instances BE ---
-  backend_size        = "t3.large" 
+  backend_size        = "t3.medium" 
   backend_volume_size = 50
   num_backend_a= ceil(var.num_backend/2)
   num_backend_b= floor(var.num_backend/2)

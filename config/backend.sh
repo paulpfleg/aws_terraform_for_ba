@@ -18,7 +18,7 @@ git init;
 git remote add -f origin https://github.com/paulpfleg/deploy.git;
 git config core.sparseCheckout true;
 echo "express_api" >> .git/info/sparse-checkout;
-git pull origin develop;
+git pull origin serialised_tasks;
 
 cd ./express_api || exit;
 mkdir input output;
