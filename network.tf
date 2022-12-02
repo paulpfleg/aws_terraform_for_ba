@@ -18,7 +18,7 @@ resource "aws_subnet" "frontend_subnet" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = local.frontend_subnet_cidr
   availability_zone = local.frontend_subnet_az
-    tags = {
+  tags = {
     Name = "frontend"
   }
 }
@@ -26,7 +26,7 @@ resource "aws_subnet" "backend-subnet-a" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = local.backend_subnet_cidr_a
   availability_zone = local.backend_subnet_az_a
-    tags = {
+  tags = {
     Name = "backend-A"
   }
 }
@@ -36,7 +36,7 @@ resource "aws_subnet" "backend-subnet-b" {
   cidr_block        = local.backend_subnet_cidr_b
   availability_zone = local.backend_subnet_az_b
 
-    tags = {
+  tags = {
     Name = "frontend-B"
   }
 
@@ -48,11 +48,11 @@ resource "aws_internet_gateway" "gw" {
 }
 
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id       = aws_vpc.vpc.id
-  service_name = "com.amazonaws.eu-central-1.s3"
+  vpc_id            = aws_vpc.vpc.id
+  service_name      = "com.amazonaws.eu-central-1.s3"
   vpc_endpoint_type = "Gateway"
-  route_table_ids = [aws_route_table.public-rt.id]
-    tags = {
+  route_table_ids   = [aws_route_table.public-rt.id]
+  tags = {
     Name = "ffmpeg_bucket"
   }
 }
@@ -65,7 +65,7 @@ resource "aws_route_table" "public-rt" {
     gateway_id = aws_internet_gateway.gw.id
   }
 
-    tags = {
+  tags = {
     Name = "public"
   }
 }

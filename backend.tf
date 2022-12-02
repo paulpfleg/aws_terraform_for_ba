@@ -15,7 +15,7 @@ resource "aws_instance" "backend_a" {
   key_name                    = aws_key_pair.local_acess.key_name
   subnet_id                   = aws_subnet.backend-subnet-a.id
   security_groups             = [aws_security_group.sg_private_subnets.id]
-  private_ip                  = "${substr(local.backend_first_ip_a,0,10)}${count.index+tonumber(substr(local.proxy_private_ip,-2,0))}"
+  private_ip                  = "${substr(local.backend_first_ip_a, 0, 10)}${count.index + tonumber(substr(local.proxy_private_ip, -2, 0))}"
   associate_public_ip_address = true
 
   root_block_device {
@@ -84,7 +84,7 @@ resource "aws_instance" "backend_b" {
   key_name                    = aws_key_pair.local_acess.key_name
   subnet_id                   = aws_subnet.backend-subnet-b.id
   security_groups             = [aws_security_group.sg_private_subnets.id]
-  private_ip                  = "${substr(local.backend_first_ip_b,0,10)}${count.index+tonumber(substr(local.proxy_private_ip,-2,0))}"
+  private_ip                  = "${substr(local.backend_first_ip_b, 0, 10)}${count.index + tonumber(substr(local.proxy_private_ip, -2, 0))}"
   associate_public_ip_address = true
 
   root_block_device {

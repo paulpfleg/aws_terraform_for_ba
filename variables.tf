@@ -39,27 +39,21 @@ variable "num_backend" {
   type        = number
 }
 
-/* variable "num_backend_b" {
-  description = "number of backend nodes"
-  type        = number
-  default     = 1
-}
- */
 locals {
 
   # --- Instances FE ---
-  frontend_size        = "t2.micro"
-  ami                  = "ami-0caef02b518350c8b" #x84 eu-central ubuntu 22.04
-  ami_backend          = "ami-0caef02b518350c8b" #x84 eu-central ubuntu 22.04
-# "ami-05d8c3dc27d413c4b" #arm eu-central ubuntu 22.04 
-                        
+  frontend_size = "t2.micro"
+  ami           = "ami-0caef02b518350c8b" #x84 eu-central ubuntu 22.04
+  ami_backend   = "ami-0caef02b518350c8b" #x84 eu-central ubuntu 22.04
+  # "ami-05d8c3dc27d413c4b" #arm eu-central ubuntu 22.04 
+
   frontend_volume_size = 8
 
   # --- Instances BE ---
-  backend_size        = "t3.medium" 
+  backend_size        = "t2.micro"
   backend_volume_size = 50
-  num_backend_a= ceil(var.num_backend/2)
-  num_backend_b= floor(var.num_backend/2)
+  num_backend_a       = ceil(var.num_backend / 2)
+  num_backend_b       = floor(var.num_backend / 2)
 
 
   # --- Netzwork ---
@@ -71,7 +65,7 @@ locals {
   backend_subnet_cidr_b = "192.168.4.0/24"
 
 
-  
+
 
 
 
@@ -85,7 +79,7 @@ locals {
   backend_subnet_az_a = "eu-central-1a"
   backend_subnet_az_b = "eu-central-1b"
 
-  
+
 
 }
 
