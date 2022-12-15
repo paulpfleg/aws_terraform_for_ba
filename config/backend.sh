@@ -26,5 +26,5 @@ mkdir input output;
 npm install;
 
 #sudo DEBIAN_FRONTEND=noninteractive apt-get -y upgrade;
-#sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install ffmpeg;
-sudo snap install ffmpeg;
+sudo DEBIAN_FRONTEND=noninteractive apt-get -yq install ffmpeg;
+#sudo snap install ffmpeg;

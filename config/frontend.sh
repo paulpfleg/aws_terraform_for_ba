@@ -18,6 +18,8 @@ git init;
 git remote add -f origin https://github.com/paulpfleg/deploy.git;
 git config core.sparseCheckout true;
 echo "aws_node" >> .git/info/sparse-checkout;
+
+# choose the branch to pull
 git pull origin serialised_tasks;
 
 
