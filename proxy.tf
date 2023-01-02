@@ -54,11 +54,10 @@ resource "aws_instance" "proxy" {
   }
 
   connection {
-    type         = "ssh"
-    host         = self.triggers.key
-    user         = "ubuntu"
-    private_key  = file("${self.triggers.key}")
-    agent        = true
+    type        = "ssh"
+    host        = self.public_ip
+    user        = "ubuntu"
+    private_key = file("${var.private_key}")
   }
 
   provisioner "local-exec" {
@@ -66,5 +65,4 @@ resource "aws_instance" "proxy" {
     command = "rsync -a -r ubuntu@${self.triggers.key}:/home/ubuntu/uptime_kuma/uptime-kuma-data config/proxy/files/"
     on_failure = continue
   }
-}
- */
+} */

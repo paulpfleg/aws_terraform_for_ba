@@ -10,3 +10,17 @@ output "proxy_global_domain" {
   description = "the Domainame of the front door"
 }
 
+resource "null_resource" "auto_open" {
+
+  depends_on = [
+    aws_instance.backend_a
+  ]
+
+  provisioner "local-exec" {
+
+
+    command = "open http://${aws_instance.proxy.public_dns}"
+
+    on_failure = continue
+  }
+}
