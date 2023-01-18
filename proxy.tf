@@ -8,7 +8,7 @@ resource "aws_instance" "proxy" {
   instance_type          = local.frontend_size
   key_name               = aws_key_pair.local_acess.key_name
   subnet_id              = aws_subnet.public-subnet.id
-  vpc_security_group_ids = [aws_security_group.aws-vm-sg.id]
+  vpc_security_group_ids = [aws_security_group.sg_public_subnets.id]
   source_dest_check      = false
 
   private_ip = local.proxy_private_ip

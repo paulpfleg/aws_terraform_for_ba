@@ -20,12 +20,8 @@ git config core.sparseCheckout true;
 echo "aws_node" >> .git/info/sparse-checkout;
 
 # choose the branch to pull
-git pull origin serialised_tasks;
+git pull origin develop;
 
 
 cd ./aws_node || exit;
 npm install;
-
-
-
-

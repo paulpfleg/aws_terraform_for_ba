@@ -2,7 +2,7 @@
 sudo hostnamectl set-hostname proxy;
 
 sudo apt-get update;
-sudo apt-get install --no-install-recommends software-properties-common;
+sudo apt-get install --no-install-recommends software-properties-common -y;
 sudo add-apt-repository ppa:vbernat/haproxy-2.5 -y;
 
 sudo apt-get install nginx -y;
@@ -15,9 +15,9 @@ mv ./files/uptime-kuma-data ./uptime_kuma/;
 chown -R ubuntu:ubuntu ./uptime_kuma/uptime-kuma-data;
 
 #Install Docker & Docker Compose for Uptime Kuma
-sudo snap install docker;
+#sudo snap install docker;
 
-sudo groupadd docker;
+#sudo groupadd docker;
 
 
 #unlink the default showcase host
@@ -29,8 +29,8 @@ sudo mv /home/ubuntu/files/haproxy.cfg /etc/haproxy;
 
 rm -R /home/ubuntu/files;
 
-cd /home/ubuntu/uptime_kuma || return;
-sudo docker-compose up -d;
+#cd /home/ubuntu/uptime_kuma || return;
+#sudo docker-compose up -d;
 
 sudo nginx -s reload;
 

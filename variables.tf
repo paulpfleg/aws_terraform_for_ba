@@ -43,15 +43,17 @@ locals {
 
   # --- Instances FE ---
   frontend_size = "t2.micro"
-  ami           = "ami-0caef02b518350c8b" #x84 eu-central ubuntu 22.04
-  ami_backend   = "ami-0caef02b518350c8b" #x84 eu-central ubuntu 22.04
-  #"ami-05d8c3dc27d413c4b" #arm eu-central ubuntu 22.04 
-  
+  ami           = "ami-0caef02b518350c8b" 
 
   frontend_volume_size = 8
 
   # --- Instances BE ---
-  backend_size        = "t2.micro"   #"c6g.xlarge"
+  backend_size        = "c6g.large"
+
+    ami_backend   = "ami-05d8c3dc27d413c4b" 
+  #"ami-05d8c3dc27d413c4b" #arm eu-central ubuntu 22.04 
+  #"ami-0caef02b518350c8b" #x84 eu-central ubuntu 22.04
+
   backend_volume_size = 50
   num_backend_a       = ceil(var.num_backend / 2)
   num_backend_b       = floor(var.num_backend / 2)

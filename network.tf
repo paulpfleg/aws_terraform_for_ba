@@ -91,7 +91,7 @@ resource "aws_route_table_association" "backend-b-rt-association" {
 }
 
 # Define the security group for the EC2 Instance
-resource "aws_security_group" "aws-vm-sg" {
+resource "aws_security_group"  "sg_public_subnets" {
   name        = "vm-sg"
   description = "Allow incoming connections"
   vpc_id      = aws_vpc.vpc.id
@@ -147,7 +147,7 @@ resource "aws_security_group" "sg_private_subnets" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [local.default_vpc_cidr]
     description = "incomming tcp from VPC"
   }
 
