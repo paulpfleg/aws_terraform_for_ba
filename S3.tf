@@ -1,3 +1,7 @@
+/* --- creates S3 Object Storage commented
+commented out as it makes no sense to create the Bbucket with every start
+ --- */
+
 /* 
 resource "aws_s3_bucket" "ffmpeg-node" {
   bucket = "ffmpeg-node"

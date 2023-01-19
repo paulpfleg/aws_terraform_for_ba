@@ -1,2 +1,4 @@
+# local ssh config file
+
 Host ${aws_instance.proxy.public_ip}
   ForwardAgent yes

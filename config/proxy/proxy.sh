@@ -14,12 +14,6 @@ mv ./files/docker-compose.yml ./uptime_kuma/;
 mv ./files/uptime-kuma-data ./uptime_kuma/;
 chown -R ubuntu:ubuntu ./uptime_kuma/uptime-kuma-data;
 
-#Install Docker & Docker Compose for Uptime Kuma
-#sudo snap install docker;
-
-#sudo groupadd docker;
-
-
 #unlink the default showcase host
 sudo unlink /etc/nginx/sites-enabled/default;
 
@@ -29,11 +23,10 @@ sudo mv /home/ubuntu/files/haproxy.cfg /etc/haproxy;
 
 rm -R /home/ubuntu/files;
 
-#cd /home/ubuntu/uptime_kuma || return;
-#sudo docker-compose up -d;
 
 sudo nginx -s reload;
 
+#start the services
 sudo systemctl daemon-reload;
 sudo systemctl restart nginx.service;
 sudo systemctl restart haproxy.service;

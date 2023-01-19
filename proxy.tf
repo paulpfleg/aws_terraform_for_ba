@@ -1,3 +1,5 @@
+# creates the proxy server
+
 
 resource "aws_instance" "proxy" {
   depends_on = [
@@ -13,14 +15,13 @@ resource "aws_instance" "proxy" {
 
   private_ip = local.proxy_private_ip
 
-  //user_data = "./config/frontend.sh"
-
   associate_public_ip_address = true
 
   root_block_device {
     volume_size           = 8
     delete_on_termination = true
   }
+
 
   connection {
     type        = "ssh"
@@ -29,11 +30,13 @@ resource "aws_instance" "proxy" {
     private_key = file("${var.private_key}")
   }
 
+# uploads config files for nginx and haproxy
   provisioner "file" {
     source      = "./config/proxy/files"
     destination = "./files"
   }
 
+#runs script to install apps, pull repo and start services
   provisioner "remote-exec" {
     script = "./config/proxy/proxy.sh"
 
@@ -43,26 +46,3 @@ resource "aws_instance" "proxy" {
     Name = "proxy"
   }
 }
-
-
-
-/* resource "null_resource" "destroy_proxy" {
-
-  triggers = {
-    key = var.private_key
-    ip = aws_instance.proxy.public_ip 
-  }
-
-  connection {
-    type        = "ssh"
-    host        = self.public_ip
-    user        = "ubuntu"
-    private_key = file("${var.private_key}")
-  }
-
-  provisioner "local-exec" {
-    when    = destroy
-    command = "rsync -a -r ubuntu@${self.triggers.key}:/home/ubuntu/uptime_kuma/uptime-kuma-data config/proxy/files/"
-    on_failure = continue
-  }
-} */

@@ -5,13 +5,13 @@ resource "aws_vpc" "vpc" {
   cidr_block           = local.default_vpc_cidr
   enable_dns_hostnames = true
 }
+
 # Define the public subnet
 resource "aws_subnet" "public-subnet" {
   vpc_id            = aws_vpc.vpc.id
   cidr_block        = local.public_subnet_cidr
   availability_zone = local.frontend_subnet_az
 }
-
 
 # Define the public subnet
 resource "aws_subnet" "frontend_subnet" {
@@ -42,7 +42,7 @@ resource "aws_subnet" "backend-subnet-b" {
 
 }
 
-
+#internet gateway routing traffic with external ip to the internet
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.vpc.id
 }
@@ -69,7 +69,7 @@ resource "aws_route_table" "public-rt" {
     Name = "public"
   }
 }
-# Assign the public route table to the public subnet
+# Assign the public route table to the public subnets
 resource "aws_route_table_association" "public-rt-association" {
   subnet_id      = aws_subnet.public-subnet.id
   route_table_id = aws_route_table.public-rt.id
@@ -90,7 +90,7 @@ resource "aws_route_table_association" "backend-b-rt-association" {
   route_table_id = aws_route_table.public-rt.id
 }
 
-# Define the security group for the EC2 Instance
+# public subnet  sec.group allowing http & ssh connections
 resource "aws_security_group"  "sg_public_subnets" {
   name        = "vm-sg"
   description = "Allow incoming connections"
@@ -138,6 +138,7 @@ resource "aws_security_group"  "sg_public_subnets" {
   }
 }
 
+# public subnet  sec.group allowing http & ssh connections
 resource "aws_security_group" "sg_private_subnets" {
   name        = "sg_private_subnets"
   description = "Allow incoming connections"

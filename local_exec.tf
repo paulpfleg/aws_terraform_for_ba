@@ -1,3 +1,7 @@
+#executes commans on local machine
+
+
+# enables / configures ssh-agent
 resource "null_resource" "provis_local" {
   depends_on = [
     aws_instance.proxy
@@ -17,6 +21,7 @@ resource "null_resource" "provis_local" {
 
 }
 
+#hands over variables to shell scripts
 resource "null_resource" "configure_file" {
   provisioner "local-exec" {
     command = "bash ${templatefile("${path.module}/conf_nginx.sh", { num_backend_a = local.num_backend_a, num_backend_b = local.num_backend_b, num_backend = var.num_backend })}"

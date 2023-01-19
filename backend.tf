@@ -2,7 +2,7 @@
 # --- Instances ---
 
 
-# Instance A
+# Backend Instance A
 resource "aws_instance" "backend_a" {
 
   depends_on = [
@@ -32,6 +32,7 @@ resource "aws_instance" "backend_a" {
     agent        = true
   }
 
+# change hostname edit ssh conf. to enable github pull via ssh
   provisioner "remote-exec" {
     inline = [
       "sudo hostnamectl set-hostname backend_A_${count.index}",
@@ -42,12 +43,13 @@ resource "aws_instance" "backend_a" {
     on_failure = continue
   }
 
+# send service files to server
   provisioner "file" {
     source      = "./config/node_backend.service"
     destination = "/home/ubuntu/node_backend.service"
   }
 
-
+# run shell script to install apps, pull repo, create folder structure
   provisioner "remote-exec" {
     script     = "./config/backend.sh"
     on_failure = continue
@@ -72,6 +74,7 @@ resource "aws_instance" "backend_a" {
 
 # Instance B
 
+# same as instance A but in other AVZ
 resource "aws_instance" "backend_b" {
 
   depends_on = [

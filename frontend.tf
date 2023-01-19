@@ -1,6 +1,7 @@
 
 # --- Instances ---
 
+# Frontend Instance
 resource "aws_instance" "frontend" {
 
   depends_on = [
@@ -17,8 +18,6 @@ resource "aws_instance" "frontend" {
   private_ip                  = local.frontend_first_ip
   associate_public_ip_address = true
 
-  #source_dest_check      = false
-
   root_block_device {
     volume_size           = local.frontend_volume_size
     delete_on_termination = true
@@ -30,6 +29,7 @@ resource "aws_instance" "frontend" {
 
 }
 
+# first provisioner - runs corresponding shell script
 resource "null_resource" "provis_1_frontend" {
   count = var.provis_frontend ? 1 : 0
 
@@ -53,6 +53,7 @@ resource "null_resource" "provis_1_frontend" {
 
 }
 
+# second provisioner - configures node.service file
 resource "null_resource" "provis_2_frontend" {
   count = var.provis_frontend ? 1 : 0
   depends_on = [
