@@ -53,7 +53,7 @@ resource "null_resource" "provis_1_frontend" {
 
 }
 
-# second provisioner - configures node.service file
+# second provisioner - configures node.service file & start services
 resource "null_resource" "provis_2_frontend" {
   count = var.provis_frontend ? 1 : 0
   depends_on = [

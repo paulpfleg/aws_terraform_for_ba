@@ -39,7 +39,6 @@ resource "aws_instance" "proxy" {
 #runs script to install apps, pull repo and start services
   provisioner "remote-exec" {
     script = "./config/proxy/proxy.sh"
-
   }
 
   tags = {

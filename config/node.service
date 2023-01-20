@@ -7,6 +7,7 @@ Documentation=the REPLACE Keywords will be replaced
 After=network.target
 
 [Service]
+# IPs, that will be replaced
 Environment=AWSAccessKeyId=REPLACE1 
 Environment=AWSSecretKey=REPLACE2
 Environment=IP=REPLACE3

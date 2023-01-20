@@ -1,10 +1,13 @@
 #! /bin/bash
+
+#change Servers hostname
 sudo hostnamectl set-hostname proxy;
 
 sudo apt-get update;
 sudo apt-get install --no-install-recommends software-properties-common -y;
 sudo add-apt-repository ppa:vbernat/haproxy-2.5 -y;
 
+#install nginx & haproxy
 sudo apt-get install nginx -y;
 sudo apt-get install haproxy=2.5.\* -y;
 

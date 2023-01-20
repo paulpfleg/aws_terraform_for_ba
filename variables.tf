@@ -1,3 +1,5 @@
+# --- variables for use in other files ---
+
 # --- keys for cloud provider acess ---
 
 variable "access_key" {
