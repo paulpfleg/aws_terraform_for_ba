@@ -1,6 +1,9 @@
+#Service file to configure the systemctl job
+# hand over AWS Keys & make the service restart on failure
+
 [Unit]
-Description=starting the node.js server - restarting on reboot
-Documentation=the REPLACE Keywords will be replaced
+Description=starting the node.js server - restarting on reboot the REPLACE Keywords will be replaced
+Documentation=
 After=network.target
 
 [Service]
@@ -8,7 +11,7 @@ Environment=AWSAccessKeyId=REPLACE1
 Environment=AWSSecretKey=REPLACE2
 Type=simple
 User=ubuntu
-ExecStart=node /home/ubuntu/deploy/express_api
+ExecStart=/home/ubuntu/.nvm/versions/node/v18.12.1/bin/node /home/ubuntu/deploy/express_api
 Restart=on-failure
 
 [Install]

@@ -1,14 +1,19 @@
+#Service file to configure the systemctl job
+# hand over AWS Keys & make the service restart on failure
+
 [Unit]
 Description=starting the node.js server - restarting on reboot
 Documentation=the REPLACE Keywords will be replaced
 After=network.target
 
 [Service]
+# IPs, that will be replaced
 Environment=AWSAccessKeyId=REPLACE1 
 Environment=AWSSecretKey=REPLACE2
+Environment=IP=REPLACE3
 Type=simple
 User=ubuntu
-ExecStart=node /home/ubuntu/deploy/aws_node
+ExecStart=/home/ubuntu/.nvm/versions/node/v18.12.1/bin/node /home/ubuntu/deploy/aws_node
 Restart=on-failure
 
 [Install]

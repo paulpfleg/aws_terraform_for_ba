@@ -1,24 +1,21 @@
-resource "aws_key_pair" "frontend" {
-  key_name   = "local key"
-  public_key = file("${var.public_key}")
-
-  tags = {
-    Name = "frontend"
-  }
-}
 
 # --- Instances ---
 
-resource "aws_instance" "app_server" {
-  ami                    = local.ami
-  instance_type          = local.frontend_size
-  key_name               = aws_key_pair.frontend.key_name
-  subnet_id              = aws_subnet.public-subnet.id
-  vpc_security_group_ids = [aws_security_group.aws-vm-sg.id]
-  source_dest_check      = false
+# Frontend Instance
+resource "aws_instance" "frontend" {
 
-  //user_data = "./config/frontend.sh"
+  depends_on = [
+    aws_instance.proxy
+  ]
 
+  count           = var.num_frontend
+  ami             = local.ami
+  instance_type   = local.frontend_size
+  key_name        = aws_key_pair.local_acess.key_name
+  subnet_id       = aws_subnet.frontend_subnet.id
+  security_groups = [aws_security_group.sg_private_subnets.id]
+
+  private_ip                  = local.frontend_first_ip
   associate_public_ip_address = true
 
   root_block_device {
@@ -26,143 +23,65 @@ resource "aws_instance" "app_server" {
     delete_on_termination = true
   }
 
-    connection {
-    type = "ssh"
-    host = aws_instance.app_server.public_ip
-    user = "ubuntu"
-    private_key = file("${var.private_key}")
-    }
-
-    provisioner "remote-exec" {
-    inline = [
-      "sudo hostnamectl set-hostname frontend"
-    ]    
-    } 
-
-
   tags = {
     Name = "frontend"
   }
 
 }
 
-resource "null_resource" "provis_frontend" {
-  depends_on = [
-    aws_instance.app_server
-  ]
+# first provisioner - runs corresponding shell script
+resource "null_resource" "provis_1_frontend" {
+  count = var.provis_frontend ? 1 : 0
 
   connection {
-    type = "ssh"
-    host = aws_instance.app_server.public_ip
-    user = "ubuntu"
-    private_key = file("${var.private_key}")
-  }
-
-  provisioner "remote-exec" {
-    script = "./config/frontend.sh"    
-  }  
-}
-
-resource "null_resource" "start_node" {
-  depends_on = [
-    null_resource.provis_frontend
-  ]
-
-  connection {
-    type = "ssh"
-    host = aws_instance.app_server.public_ip
-    user = "ubuntu"
-    private_key = file("${var.private_key}")
+    type         = "ssh"
+    bastion_host = aws_instance.proxy.public_ip
+    host         = aws_instance.frontend[count.index].private_ip
+    user         = "ubuntu"
+    private_key  = file("${var.private_key}")
+    agent        = true
   }
 
   provisioner "file" {
-      source      = "./config/node.service"
-      destination = "/home/ubuntu/node.service"
+    source      = "./config/node.service"
+    destination = "/home/ubuntu/node.service"
   }
 
   provisioner "remote-exec" {
+    script = "./config/frontend.sh"
+  }
 
+}
+
+# second provisioner - configures node.service file & start services
+resource "null_resource" "provis_2_frontend" {
+  count = var.provis_frontend ? 1 : 0
+  depends_on = [
+    null_resource.provis_1_frontend
+  ]
+
+  connection {
+    type         = "ssh"
+    bastion_host = aws_instance.proxy.public_ip
+    host         = aws_instance.frontend[count.index].private_ip
+    user         = "ubuntu"
+    private_key  = file("${var.private_key}")
+    agent        = true
+  }
+
+  provisioner "remote-exec" {
     inline = [
       "sed -i 's/REPLACE1/${var.access_key}/g' node.service",
-      "sed -i 's/REPLACE2/${var.secret_key}/g' node.service",   
+      "sed -i 's/REPLACE2/${var.secret_key}/g' node.service",
+      "sed -i 's/REPLACE3/${aws_instance.proxy.private_ip}/g' node.service",
       "sudo mv /home/ubuntu/node.service /lib/systemd/system",
       "sudo systemctl daemon-reload",
-      "sudo systemctl start node.service"      
-    ]       
-  }  
-}
-
-
-# --- Network ---
-
-# Create the VPC
-resource "aws_vpc" "vpc" {
-  cidr_block           = local.default_vpc_cidr
-  enable_dns_hostnames = true
-}
-# Define the public subnet
-resource "aws_subnet" "public-subnet" {
-  vpc_id            = aws_vpc.vpc.id
-  cidr_block        = local.frontend_subnet_cidr
-  availability_zone = local.frontend_subnet_az
-}
-# Define the internet gateway
-resource "aws_internet_gateway" "gw" {
-  vpc_id = aws_vpc.vpc.id
-}
-# Define the public route table
-resource "aws_route_table" "public-rt" {
-  vpc_id = aws_vpc.vpc.id
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.gw.id
-  }
-}
-# Assign the public route table to the public subnet
-resource "aws_route_table_association" "public-rt-association" {
-  subnet_id      = aws_subnet.public-subnet.id
-  route_table_id = aws_route_table.public-rt.id
-}
-
-# Define the security group for the EC2 Instance
-resource "aws_security_group" "aws-vm-sg" {
-  name        = "vm-sg"
-  description = "Allow incoming connections"
-  vpc_id      = aws_vpc.vpc.id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow incoming HTTP connections"
-  }
-
-    ingress {
-    from_port   = 8080
-    to_port     = 8081
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow incoming HTTP connections"
-  }
-
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow incoming SSH connections"
-  }
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-  tags = {
-    Name = "frontend"
+      "sudo systemctl start node.service",
+      "sudo systemctl enable node.service"
+    ]
   }
 }
 
-# --- Output ---
+
+
 

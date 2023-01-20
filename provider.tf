@@ -1,3 +1,5 @@
+# sets up acess keys for the cloudprovider
+
 terraform {
   required_providers {
     aws = {

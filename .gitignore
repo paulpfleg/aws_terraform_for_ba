@@ -1,4 +1,6 @@
 **/.terraform
 *.tfvars
 *.tfstate
-*.backup
+**.backup
+**.cfg
+
