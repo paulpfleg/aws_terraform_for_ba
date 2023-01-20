@@ -20,11 +20,11 @@ To start using the code, you should follow these steps:
 * install aws cli 
 * in the aws_terraform_for_ba folder, create an enviroments.tfvars file with the following contents:
 
-access_key = "YOUR_AWS_ACESS_KEY"
-secret_key = "YOUR_SECRET_AWS_ACESS_KEY"
+* * access_key = "YOUR_AWS_ACESS_KEY"
+* * secret_key = "YOUR_SECRET_AWS_ACESS_KEY"
 
-public_key  = "/path/to/ssh/key"
-private_key = "/path/to/private/ssh/key"
+* * public_key  = "/path/to/ssh/key"
+* * private_key = "/path/to/private/ssh/key"
 
 * make sure the predefined values under variables.tf fit your needs
 * roll out the infrastructure by typing the following command i a terminal located in the aws_terraform_for_ba folder
